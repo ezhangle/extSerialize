@@ -7,6 +7,9 @@ copyright uniflare at gmail.com 2017
 Brief:
 	Serialize extension for Arma 3 is a very simple extension that reads and writes raw data strings.
 	Strings are serialized inside the extension.
+	
+	Serialization not implemented.
+	Current code base is proof-of-concept prototype.
 
 - - - - - - - - - - - - - - - - - - - - - - -
 Concept:
@@ -56,7 +59,11 @@ Concept:
 
 - - - - - - - - - - - - - - - - - - - - - - -
 Usage:
-	Pop the dll into your arma 3 server root directory (next to arma3server.exe/arma3server_x64.exe)
+	1. Pop the dll into your arma 3 server root directory (next to arma3server.exe/arma3server_x64.exe)
+	2. Copy the res/extSerialize.extcfg file next to the dll.
+	3. Create a new folder called "SaveData" next to the dll.
+	4. Test on dedicated server process.
+	
 	Note:All the following functions can only be used server-side ofc
 	
 	When you want to write some data to retrieve later:
@@ -66,6 +73,7 @@ Usage:
 		_raw_string = callExtension "serializeExt" format ["read;%1", _data_identifier];
 		
 	Note: Writing empty data to a unique identifier will effectively delete the data (server file will be deleted).
+	^ Not implemented yet.
 
 - - - - - - - - - - - - - - - - - - - - - - -
 Request signatures:
@@ -84,7 +92,7 @@ Request signatures:
 			
 	[GET LAST ERROR]
 		syntax:		get_last_error;<data_identifier>
-		return:		string <"ERROR"|Last Error Details>
+		return:		string <"ERROR">
 		Example:
 			
 			
