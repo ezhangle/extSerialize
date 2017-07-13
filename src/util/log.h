@@ -1,6 +1,8 @@
 #pragma once
 #include <fstream>
 #include <string>
+#include <iomanip>
+#include <ctime>
 
 #define EXTS_LOG_PATH "extSerialize.log"
 
@@ -28,13 +30,17 @@ namespace util
 				if (!stream)
 				{
 					bFatalError = true;
-					return; // TODO: very bad situation (lost error messages), should somehow send event in output back to sqf
+					return; // TODO: Silent failure is never good
 				}
 			}
 		}
 
+		// Get Timestamp
+		auto t = std::time(nullptr);
+		auto tm = *std::localtime(&t);
+
 		// Log message to file
-		stream << message << std::endl;
+		stream << std::put_time(&tm, "%d-%m-%Y %H:%M:%S") << ":: " << message << std::endl;
 	}
 
 }

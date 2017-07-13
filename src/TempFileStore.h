@@ -1,5 +1,6 @@
 #pragma once
 #include "util/log.h"
+#include "util/files.h"
 
 #include <string>
 #include <map>
@@ -49,15 +50,17 @@ public:
 
 		m_outSizeMax = outSizeMax;
 
+		static std::string cwd(util::GetCWD());
+
 		// Sanity checks
 		struct stat info;
 		if (stat(pathname.c_str(), &info) != 0)
 		{
-			util::LogMessage("ERROR! (FileStore) Cannot access storage path '" + pathname + "'.");
+			util::LogMessage("ERROR! (FileStore) Cannot access storage path '" + util::JoinPaths(cwd, pathname) + "'.");
 		}
 		else if (!(info.st_mode & S_IFDIR))
 		{
-			util::LogMessage("ERROR! (FileStore) Storage directory doesn't exist! (" + pathname + ").");
+			util::LogMessage("ERROR! (FileStore) Storage directory doesn't exist! (" + util::JoinPaths(cwd, pathname) + ").");
 		}
 		else
 		{
@@ -68,13 +71,13 @@ public:
 			const bool bCanWrite = static_cast<bool>(std::ofstream("writetest.txt").put('x'));
 			if (!bCanWrite)
 			{
-				util::LogMessage("ERROR! (FileStore) Cannot create/write files to '" + pathname + "'.");
+				util::LogMessage("ERROR! (FileStore) Cannot create/write files to '" + util::JoinPaths(cwd, pathname) + "'.");
 			}
 			else
 			{
 				if (std::remove("writetest.txt") != 0)
 				{
-					util::LogMessage("ERROR! (FileStore) Cannot create/write files to '" + pathname + "'.");
+					util::LogMessage("ERROR! (FileStore) Cannot create/write files to '" + util::JoinPaths(cwd, pathname) + "'.");
 				}
 				else
 				{
@@ -120,7 +123,7 @@ public:
 			}
 			else
 			{
-				util::LogMessage("ERROR! (FileStore) Could not find file '" + key + "'.");
+				util::LogMessage("ERROR! (FileStore) Could not find file '" + util::JoinPaths(util::JoinPaths(util::GetCWD(), m_savePath), key) + "'.");
 				m_sBufMap[key] = "ERROR";
 			}
 		}
@@ -148,7 +151,7 @@ public:
 
 		if (!stream.good())
 		{
-			util::LogMessage("ERROR! (FileStore) SaveData(" + key + "). Cannot open/create file: " + m_savePath + "/" + key);
+			util::LogMessage("ERROR! (FileStore) SaveData(" + key + "). Cannot open/create file: '" + util::JoinPaths(util::JoinPaths(util::GetCWD(), m_savePath), key) + "'.");
 			return false;
 		}
 
